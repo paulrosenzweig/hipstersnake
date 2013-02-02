@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="UTF-8">
+	<title>Snake</title>
+	<style type="text/css">
+	  html {
+	  background: url("static/hipsnake.png") no-repeat center center fixed; 
+	  -webkit-background-size: cover;
+	  -moz-background-size: cover;
+	  -o-background-size: cover;
+	  background-size: cover;
+	  }
+	  .cell {
+	  width: 9px;
+	  height: 9px;
+	  float: left;
+	  background-color: rgba(200,200,200,.4);
+	  margin: 1px 1px 0 0;
+	  }
+	  .cell.them {
+	  background-color: rgba(83, 124, 44, 1);
+	  }
+	  .cell.food {
+	  background-color: #00f;
+	  }
+	  .cell.me {
+	  background-color: rgba(250,0,0,1)
+	  }
+	  #grid {
+	  display: none;
+	  width: 500px;
+	  margin: 30px auto;
+	  }
+	  h1 {
+	  margin: 20px auto;
+	  width: 499px;
+	  background-color: rgba(180, 180, 180, .5);
+	  font-family: Helvetica;
+	  font-weight: 200;
+	  text-align: center;
+	  }
+	  h2 {
+	  font-family: Helvetica;
+	  font-weight: 200;
+	  text-align: right;
+	  width: 499px;
+	  margin: 0 auto;
+	  display: none;
+	  background-color: rgba(180, 180, 180, .4);
+	  }
+	</style>
+  </head>
+  <body>
+	<h1 id="connection-status">Connecting...</h1>
+	<div id="grid">
+	</div>
+	<h2 id="replay">Click to play again.</h2>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
+	<script src="static/script.js" type="text/javascript"></script>
+  </body>
+</html>
