@@ -1,6 +1,7 @@
 #!/bin/bash
 
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GOPATH=`pwd` go build -o snake src/snake/main/main.go
+coffee --compile static
 cd ..
 ssh root@hipstersnake.com 'svc -d /etc/service/snake/'
 scp -r snake root@hipstersnake.com:/root
