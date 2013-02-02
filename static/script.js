@@ -138,12 +138,16 @@
     heading = (function() {
       switch (e.keyCode) {
         case 37:
+        case 72:
           return 'left';
         case 38:
+        case 75:
           return 'up';
         case 39:
+        case 76:
           return 'right';
         case 40:
+        case 74:
           return 'down';
       }
     })();

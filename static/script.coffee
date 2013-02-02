@@ -84,8 +84,8 @@ send = (m) -> ws.send(JSON.stringify(m)) unless ws is undefined
 
 $("body").keydown (e) ->
   heading = switch e.keyCode
-    when 37 then 'left'
-    when 38 then 'up'
-    when 39 then 'right'
-    when 40 then 'down'
+    when 37, 72 then 'left'
+    when 38, 75 then 'up'
+    when 39, 76 then 'right'
+    when 40, 74 then 'down'
   send(heading: heading) unless heading is undefined

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -19,7 +18,7 @@ func main() {
 	http.HandleFunc("/", mainHandler)
 	http.Handle("/static/", http.FileServer(http.Dir(".")))
 	http.Handle("/ws", connection.ConnectionHandler)
-	err := http.ListenAndServe(fmt.Sprintf(":%d", 80), nil)
+	err := http.ListenAndServe(":80", nil)
 	if err != nil {
 		panic("ListenAndServe: " + err.Error())
 	}
