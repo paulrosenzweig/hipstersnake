@@ -14,9 +14,10 @@ var (
 
 func socketHandler(ws *websocket.Conn) {
 	p := &player.Player{
-		FromClient:   make(chan *player.Message, 0),
-		ToClient:     make(chan interface{}, 0),
-		Disconnected: false,
+		FromClient:     make(chan *player.Message, 0),
+		ToClient:       make(chan interface{}, 0),
+		HeadingChanges: make([]string, 0),
+		Disconnected:   false,
 	}
 
 	quitPinger := make(chan int, 0)
