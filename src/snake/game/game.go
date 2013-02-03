@@ -70,14 +70,10 @@ func create(PlayerOne *player.Player, PlayerTwo *player.Player) {
 
 func (game *Game) run() {
 	timeInterval := 2e8
-	updateTicker := time.Tick(30e9)
 	moveTicker := time.Tick(time.Duration(timeInterval))
 	foodTicker := time.Tick(1e9)
 	for {
 		select {
-		case <-updateTicker:
-			timeInterval /= 2
-			moveTicker = time.Tick(time.Duration(timeInterval))
 		case <-moveTicker:
 			game.PlayerOne.AdvancePosition()
 			game.PlayerTwo.AdvancePosition()
@@ -90,6 +86,15 @@ func (game *Game) run() {
 				return
 			} else {
 				game.eatFood()
+				if game.PlayerOne.JustAte {
+					timeInterval *= 0.97
+				}
+				if game.PlayerTwo.JustAte {
+					timeInterval *= 0.97
+				}
+				if game.PlayerOne.JustAte || game.PlayerTwo.JustAte {
+					moveTicker = time.Tick(time.Duration(timeInterval))
+				}
 			}
 		case <-foodTicker:
 			x := rand.Int() % game.Width
