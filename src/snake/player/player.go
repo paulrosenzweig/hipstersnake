@@ -8,7 +8,7 @@ type Player struct {
 	FromClient        chan *Message    `json:"-"`
 	ToClient          chan interface{} `json:"-"`
 	Heading           string           `json:"-"`
-	HeadingOnLastMove string           `json:"-"`
+	HeadingChanges    []string         `json:"-"`
 	Position          [][2]int         `json:"position"`
 	LostGame          bool             `json:"hasLost"`
 	JustAte           bool             `json:"-"`
@@ -21,18 +21,32 @@ type Message struct {
 	Ping    string `json:"ping"`
 }
 
-func (player *Player) UpdateHeading(update *Message) {
-	reversals := map[string]string{
+var (
+	reversals = map[string]string{
 		"up":    "down",
 		"down":  "up",
 		"right": "left",
 		"left":  "right",
 	}
-	_, validHeading := reversals[update.Heading]
-	isReversal := reversals[player.HeadingOnLastMove] == update.Heading
-	if validHeading && !isReversal {
-		player.Heading = update.Heading
+)
+
+func (player *Player) UpdateHeading(update *Message) {
+	pending := len(player.HeadingChanges)
+	if pending == 2 {
+		return
 	}
+	var nextHeading string
+	if pending > 0 {
+		nextHeading = player.HeadingChanges[0]
+	} else {
+		nextHeading = player.Heading
+	}
+	reversal, validHeading := reversals[nextHeading]
+	h := update.Heading
+	if !validHeading || h == nextHeading || h == reversal {
+		return
+	}
+	player.HeadingChanges = append(player.HeadingChanges, h);
 }
 
 func (player *Player) CollidedInto(otherPlayer *Player) bool {
@@ -63,8 +77,12 @@ func (player *Player) AdvancePosition() {
 	frontPosition := player.Position[0]
 	x, y := frontPosition[0], frontPosition[1]
 	var newFrontPosition [2]int
-	h := player.Heading
-	switch h {
+	pending := len(player.HeadingChanges)
+	if pending > 0 {
+		player.Heading = player.HeadingChanges[0]
+		player.HeadingChanges = player.HeadingChanges[1:pending]
+	}
+	switch player.Heading {
 	case "left":
 		newFrontPosition = [2]int{x - 1, y}
 	case "right":
@@ -81,5 +99,4 @@ func (player *Player) AdvancePosition() {
 		player.JustAte = false
 	}
 	player.Position = append(nextPosition, player.Position[:lastPosition]...)
-	player.HeadingOnLastMove = player.Heading
 }
