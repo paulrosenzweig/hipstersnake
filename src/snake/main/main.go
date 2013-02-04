@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -15,10 +17,13 @@ func mainHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
+	portPtr := flag.Int("port", 80, "server port")
+	flag.Parse()
+
 	http.HandleFunc("/", mainHandler)
 	http.Handle("/static/", http.FileServer(http.Dir(".")))
 	http.Handle("/ws", connection.ConnectionHandler)
-	err := http.ListenAndServe(":80", nil)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", *portPtr), nil)
 	if err != nil {
 		panic("ListenAndServe: " + err.Error())
 	}
