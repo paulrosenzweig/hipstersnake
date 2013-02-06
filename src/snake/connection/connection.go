@@ -18,6 +18,7 @@ func socketHandler(ws *websocket.Conn) {
 		ToClient:       make(chan interface{}, 0),
 		HeadingChanges: make([]string, 0),
 		Disconnected:   false,
+		Path:           ws.Request().URL.Path,
 	}
 
 	quitPinger := make(chan int, 0)

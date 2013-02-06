@@ -3,11 +3,13 @@ package game
 import (
 	"math/rand"
 	"snake/player"
+	"sync"
 	"time"
 )
 
 var (
-	pairingChannel = make(chan *player.Player, 0)
+	pairingChannels    = map[string]chan *player.Player{}
+	pairingChannelLock = sync.Mutex{}
 )
 
 type Game struct {
@@ -19,7 +21,17 @@ type Game struct {
 	Food      [][2]int       `json:"food"`
 }
 
+func getPairingChannel(key string) chan *player.Player {
+	pairingChannelLock.Lock()
+	defer pairingChannelLock.Unlock()
+	if _, found := pairingChannels[key]; !found {
+		pairingChannels[key] = make(chan *player.Player, 0)
+	}
+	return pairingChannels[key]
+}
+
 func Pair(player *player.Player) (myName, theirName string) {
+	pairingChannel := getPairingChannel(player.Path)
 	select {
 	case pairingChannel <- player:
 		myName = "playerTwo"

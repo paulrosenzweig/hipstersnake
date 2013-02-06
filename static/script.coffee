@@ -1,7 +1,7 @@
 ws = board = myName = theirName = undefined
 
 connect = ->
-  ws = new WebSocket("ws://#{document.location.host}/ws")
+  ws = new WebSocket("ws://#{document.location.host}/ws#{document.location.pathname}")
   ws.onopen = -> $("#connection-status").text("Connected! Waiting for another player...")
   ws.onerror = (e) ->
     console.log("error", e)

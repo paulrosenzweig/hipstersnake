@@ -22,7 +22,7 @@ func main() {
 
 	http.HandleFunc("/", mainHandler)
 	http.Handle("/static/", http.FileServer(http.Dir(".")))
-	http.Handle("/ws", connection.ConnectionHandler)
+	http.Handle("/ws/", connection.ConnectionHandler)
 	err := http.ListenAndServe(fmt.Sprintf(":%d", *portPtr), nil)
 	if err != nil {
 		panic("ListenAndServe: " + err.Error())

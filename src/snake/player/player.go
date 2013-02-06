@@ -5,15 +5,16 @@ import (
 )
 
 type Player struct {
-	FromClient        chan *Message    `json:"-"`
-	ToClient          chan interface{} `json:"-"`
-	Heading           string           `json:"-"`
-	HeadingChanges    []string         `json:"-"`
-	Position          [][2]int         `json:"position"`
-	LostGame          bool             `json:"hasLost"`
-	JustAte           bool             `json:"-"`
-	Disconnected      bool             `json:"-"`
-	PingSent          time.Time        `json:"-"`
+	FromClient     chan *Message    `json:"-"`
+	ToClient       chan interface{} `json:"-"`
+	Heading        string           `json:"-"`
+	HeadingChanges []string         `json:"-"`
+	Position       [][2]int         `json:"position"`
+	LostGame       bool             `json:"hasLost"`
+	JustAte        bool             `json:"-"`
+	Disconnected   bool             `json:"-"`
+	PingSent       time.Time        `json:"-"`
+	Path           string           `json:"-"`
 }
 
 type Message struct {
@@ -46,7 +47,7 @@ func (player *Player) UpdateHeading(update *Message) {
 	if !validHeading || h == nextHeading || h == reversal {
 		return
 	}
-	player.HeadingChanges = append(player.HeadingChanges, h);
+	player.HeadingChanges = append(player.HeadingChanges, h)
 }
 
 func (player *Player) CollidedInto(otherPlayer *Player) bool {

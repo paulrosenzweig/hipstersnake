@@ -5,7 +5,7 @@
   ws = board = myName = theirName = void 0;
 
   connect = function() {
-    ws = new WebSocket("ws://" + document.location.host + "/ws");
+    ws = new WebSocket("ws://" + document.location.host + "/ws" + document.location.pathname);
     ws.onopen = function() {
       return $("#connection-status").text("Connected! Waiting for another player...");
     };
