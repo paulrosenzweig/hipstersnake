@@ -35,25 +35,29 @@ connect = ->
 
 connect()
 
-$("#replay").click ->
+$("#replay").click replay = ->
   return unless ws is undefined
   $("#connection-status").text("Connecting...")
   board.clear()
   connect()
   $("#replay").fadeOut()
 
-class Board
+@Board = class Board
   constructor: (data) ->
-    width = data.width
-    height = data.height
+    @width = data.width
+    @height = data.height
     grid = $("#grid")
     @domElements = {}
-    for y in [0...height]
-      for x in [0...width]
+    for y in [0...@height]
+      for x in [0...@width]
         elem = $("<div>", class: "cell")
+        elem.data({x, y})
         @domElements[[x,y]] = elem
         grid.append(elem)
       grid.append($("<div>", style: "clear: both;"))
+    grid.on('touchstart', (evt) -> evt.preventDefault())
+    grid.on('touchend', @clickHandler)
+    grid.click(@clickHandler)
     @formerTails = []
 
   update: (data) ->
@@ -74,13 +78,44 @@ class Board
       @domElements[them.position[0]].removeClass("food").addClass("them")
       for pos in data.food
         @domElements[pos].addClass("food")
+    [@head, @tail...] = me.position
     @formerTails = [myTail, theirTail]
 
   clear: ->
     for pos, elem of @domElements
       elem.removeClass("food me them")
 
-send = (m) -> ws.send(JSON.stringify(m)) unless ws is undefined
+  heading: ->
+    [@head[0] - @tail[0][0], @head[1] - @tail[0][1]]
+
+  clickHandler: (evt) =>
+    evt.preventDefault()
+    {x, y} = $(evt.target).data()
+    heading = @heading()
+    dx = x - @head[0]
+    dy = y - @head[1]
+    
+    moreX =  Math.abs(dx) > Math.abs(dy)
+
+    # going from horizontal to vertical
+    if heading[0] and dy
+      send heading: if dy > 0 then 'down' else 'up'
+      # about face
+      if moreX and heading[0] * dx < 0
+        send heading: if dx > 0 then 'right' else 'left'
+
+    # going from vertical to horizontal
+    else if heading[1] and dx  # moving vertically
+      send heading: if dx > 0 then 'right' else 'left'
+      # about face
+      if not moreX and heading[1] * dy < 0   # clicked behind
+        send heading: if dy > 0 then 'down' else 'up'
+
+    return false
+
+send = (m) ->
+  console.log(m) unless m.ping
+  ws.send(JSON.stringify(m)) unless ws is undefined
 
 $("body").keydown (e) ->
   heading = switch e.keyCode
@@ -89,3 +124,6 @@ $("body").keydown (e) ->
     when 39, 76 then 'right'
     when 40, 74 then 'down'
   send(heading: heading) unless heading is undefined
+
+  if e.keyCode is 13 or e.keyCode is 32
+    replay()
