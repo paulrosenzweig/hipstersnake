@@ -55,18 +55,17 @@
     return $("#replay").fadeOut();
   });
 
-  this.Board = Board = (function() {
+  Board = (function() {
 
     function Board(data) {
       this.clickHandler = __bind(this.clickHandler, this);
 
-      var elem, grid, x, y, _i, _j, _ref, _ref1;
-      this.width = data.width;
-      this.height = data.height;
+      var elem, grid, height, width, x, y, _i, _j;
+      width = data.width, height = data.height;
       grid = $("#grid");
       this.domElements = {};
-      for (y = _i = 0, _ref = this.height; 0 <= _ref ? _i < _ref : _i > _ref; y = 0 <= _ref ? ++_i : --_i) {
-        for (x = _j = 0, _ref1 = this.width; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; x = 0 <= _ref1 ? ++_j : --_j) {
+      for (y = _i = 0; 0 <= height ? _i < height : _i > height; y = 0 <= height ? ++_i : --_i) {
+        for (x = _j = 0; 0 <= width ? _j < width : _j > width; x = 0 <= width ? ++_j : --_j) {
           elem = $("<div>", {
             "class": "cell"
           });
@@ -176,9 +175,6 @@
   })();
 
   send = function(m) {
-    if (!m.ping) {
-      console.log(m);
-    }
     if (ws !== void 0) {
       return ws.send(JSON.stringify(m));
     }

@@ -42,14 +42,13 @@ $("#replay").click replay = ->
   connect()
   $("#replay").fadeOut()
 
-@Board = class Board
+class Board
   constructor: (data) ->
-    @width = data.width
-    @height = data.height
+    {width, height} = data
     grid = $("#grid")
     @domElements = {}
-    for y in [0...@height]
-      for x in [0...@width]
+    for y in [0...height]
+      for x in [0...width]
         elem = $("<div>", class: "cell")
         elem.data({x, y})
         @domElements[[x,y]] = elem
@@ -94,7 +93,7 @@ $("#replay").click replay = ->
     heading = @heading()
     dx = x - @head[0]
     dy = y - @head[1]
-    
+
     moreX =  Math.abs(dx) > Math.abs(dy)
 
     # going from horizontal to vertical
@@ -113,9 +112,7 @@ $("#replay").click replay = ->
 
     return false
 
-send = (m) ->
-  console.log(m) unless m.ping
-  ws.send(JSON.stringify(m)) unless ws is undefined
+send = (m) -> ws.send(JSON.stringify(m)) unless ws is undefined
 
 $("body").keydown (e) ->
   heading = switch e.keyCode
